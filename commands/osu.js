@@ -2,12 +2,14 @@ const fs = require("fs");
 const axios = require("axios");
 const path = "./user_data.json";
 
+const latamRoles = require("../config/country_roles.js");
+const playerId = "1348444710921961553"
 module.exports = {
 	name: "osu",
 	description: "Link your Discord username to an osu! username (one-time only)",
 	async execute(message, args) {
 		// Restrict to a specific channel
-		const allowedChannelId = "1348459858029973597";
+		const allowedChannelId = "1354125067562516510";
 		if (message.channel.id !== allowedChannelId) {
 			return message.reply(`This command can only be used in <#${allowedChannelId}>.`);
 		}
@@ -43,7 +45,7 @@ module.exports = {
 
 			const token = tokenResponse.data.access_token;
 
-			// Fetch user data to verify the username exists
+			// Fetch user data from osu! API
 			const response = await axios.get(`https://osu.ppy.sh/api/v2/users/${username}/osu`, {
 				headers: { Authorization: `Bearer ${token}` }
 			});
@@ -54,19 +56,29 @@ module.exports = {
 			userData[discordId] = osuUser.username;
 			fs.writeFileSync(path, JSON.stringify(userData, null, 2));
 
-			// Assign a role
-			const roleId = "1348444710921961553";
-			const role = message.guild.roles.cache.get(roleId);
-			if (role) {
+			// Assign a country-based role
+			const userCountry = osuUser.country_code;
+
+			if (latamRoles[userCountry]) {
+				const roleId = latamRoles[userCountry];
 				const member = message.guild.members.cache.get(discordId);
 				if (member) {
-					await member.roles.add(role);
-					message.reply(`Your osu! username has been linked as **${osuUser.username}** 🎉 You have also been given the **${role.name}** role!`);
+					// Remove any previous country roles
+					for (const countryRole of Object.values(latamRoles)) {
+						if (member.roles.cache.has(countryRole)) {
+							await member.roles.remove(countryRole);
+						}
+					}
+
+					// Add the new country role
+					await member.roles.add(roleId);
+					await member.roles.add(playerId);
+					message.reply(`Gracias **${osuUser.username}**! bienvenido hermano de **${userCountry}**`);
 				} else {
-					message.reply(`Your osu! username has been linked as **${osuUser.username}**, but I couldn't assign your role. Please check my permissions.`);
+					message.reply(`Gracias **${osuUser.username}**, divertite!`);
 				}
 			} else {
-				message.reply("osu! username linked, but the specified role was not found.");
+				message.reply(`No sos bienvenido`);
 			}
 
 		} catch (error) {
