@@ -3,18 +3,21 @@ const axios = require("axios");
 const path = "./user_data.json";
 
 const latamRoles = require("../config/country_roles.js");
-const playerId = "1348444710921961553"
+const playerRole = "1348444710921961553"
+const newUserRole = ""
+const mouseRole = "1354476047902441582"
+const tabletRole = "1354476088549572761"
 module.exports = {
-	name: "osu",
-	description: "Link your Discord username to an osu! username (one-time only)",
+	name: "link",
+	description: "Verificate con tu usuario de osu",
 	async execute(message, args) {
 		// Restrict to a specific channel
 		const allowedChannelId = "1354125067562516510";
 		if (message.channel.id !== allowedChannelId) {
-			return message.reply(`This command can only be used in <#${allowedChannelId}>.`);
+			return message.reply(`Solo puede usarse en #${allowedChannelId}>.`);
 		}
 
-		if (!args.length) return message.reply("Please provide your osu! username.");
+		if (!args.length) return message.reply("Usa tu nombre de osu (!link 'usuario')");
 		const username = args.join(" ");
 		const discordId = message.author.id;
 
@@ -27,7 +30,7 @@ module.exports = {
 
 		// Prevent changing osu! username once set
 		if (userData[discordId]) {
-			return message.reply("You have already linked an osu! username and cannot change it.");
+			return message.reply("Ya linkeaste tu cuenta");
 		}
 
 		// Get osu! API credentials
@@ -51,39 +54,40 @@ module.exports = {
 			});
 
 			const osuUser = response.data;
-
+			const member = message.guild.members.cache.get(discordId);
+			console.log("member", member)
 			// Store the verified osu! username
-			userData[discordId] = osuUser.username;
-			fs.writeFileSync(path, JSON.stringify(userData, null, 2));
+			if (osuUser.discord === message.author.username) {
+				userData[discordId] = osuUser.username;
+				fs.writeFileSync(path, JSON.stringify(userData, null, 2));
+				message.author.setNickname(osuUser.username);
+			} else {
+				return message.reply("ese no es tu nombre de osu")
+			}
 
 			// Assign a country-based role
 			const userCountry = osuUser.country_code;
-
 			if (latamRoles[userCountry]) {
 				const roleId = latamRoles[userCountry];
-				const member = message.guild.members.cache.get(discordId);
 				if (member) {
-					// Remove any previous country roles
-					for (const countryRole of Object.values(latamRoles)) {
-						if (member.roles.cache.has(countryRole)) {
-							await member.roles.remove(countryRole);
-						}
-					}
-
-					// Add the new country role
+					await member.roles.add(playerRole);
 					await member.roles.add(roleId);
-					await member.roles.add(playerId);
-					message.reply(`Gracias **${osuUser.username}**! bienvenido hermano de **${userCountry}**`);
-				} else {
-					message.reply(`Gracias **${osuUser.username}**, divertite!`);
 				}
-			} else {
-				message.reply(`No sos bienvenido`);
 			}
 
+			//Assign playstyle role
+			const userPlaystyle = osuUser.playstyle[0]
+			if (userPlaystyle === "mouse") {
+				await member.roles.add(mouseRole);
+			} else if (userPlaystyle === "tablet") {
+				await member.roles.add(tabletRole);
+			}
+
+
+			return message.reply(`Bienvenido **${osuUser.username}**`);
 		} catch (error) {
 			console.error(error);
-			message.reply("Invalid osu! username or an error occurred.");
+			return message.reply("Usuario invalido, intenta de vuelta");
 		}
 	}
 };
