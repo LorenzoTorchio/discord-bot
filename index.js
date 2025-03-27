@@ -2,11 +2,18 @@ require("dotenv").config();
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers
+	]
+});
 
 client.commands = new Collection();
 
-// Load commands dynamically
+// Cargar comandos dinámicamente
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -32,5 +39,40 @@ client.on("messageCreate", async (message) => {
 		}
 	}
 });
+client.on("messageCreate", async (message) => {
+	if (message.author.bot) return;
 
+	const canalesRestringidos = [
+		"1349079122361450516", // multimedia
+		"1349078559129600063", // bots
+		"1348775577917591582", // mascotas
+		"1352060955185647718", // escritorios
+		"1353797062155571301", // encuestas
+		"1349076178924994621", // partidas
+		"1351225748299583599", // repeticiones
+		"1348780768347820173", // maps
+		"1348776361069908119", // skins
+	];
+
+	const linkRegex = /(https?:\/\/[^\s]+)/;
+
+	// Check if the message is in a restricted channel AND does NOT contain a link AND has NO attachments
+	if (
+		canalesRestringidos.includes(message.channel.id) &&
+		!linkRegex.test(message.content) &&
+		message.attachments.size === 0 // Prevents deletion if there are attachments
+	) {
+		setTimeout(() => {
+			message.delete().catch(console.error);
+		}, 5000);
+	}
+}); client.on("guildMemberRemove", async (member) => {
+	const channel = client.channels.cache.get("1353889767892189234"); // ID del canal de despedida
+
+	if (channel) {
+		await channel.send(`**${member.user.username}**`);
+	} else {
+		console.error("No se encontró el canal de despedida.");
+	}
+});
 client.login(process.env.TOKEN);

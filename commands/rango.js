@@ -1,19 +1,18 @@
-
 const axios = require("axios");
 const rankRoles = require("../config/rank_roles.js");
 
 module.exports = {
-	name: "osurank",
-	description: "Assigns a role based on osu! rank",
-	async execute(message, args) {
+	name: "rango",
+	description: "asigna un color a tu apodo segun tu rango",
+	async execute(message) {
 		const fs = require("fs");
 		const path = "./user_data.json";
 		const discordId = message.author.id;
 
 		// Check if the user has linked an osu! account
-		if (!fs.existsSync(path)) return message.reply("No osu! usernames are stored yet.");
+		if (!fs.existsSync(path)) return message.reply("no existe base de datos");
 		const userData = JSON.parse(fs.readFileSync(path, "utf8"));
-		if (!userData[discordId]) return message.reply("You haven't linked an osu! username. Use `!osu <username>` first.");
+		if (!userData[discordId]) return message.reply("debes usar !link primero");
 
 		const osuUsername = userData[discordId];
 
@@ -61,13 +60,12 @@ module.exports = {
 
 				// Add the new rank role
 				await member.roles.add(assignedRoleId);
-				message.reply(`You have been assigned the role for rank **#${globalRank}**!`);
 			} else {
-				message.reply("I couldn't assign your role. Please check my permissions.");
+				message.reply("no pude asignarte un rol");
 			}
 		} catch (error) {
 			console.error(error);
-			message.reply("Error fetching osu! data. Make sure your username is correct.");
+			message.reply("error externo");
 		}
 	}
 };
