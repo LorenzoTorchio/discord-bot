@@ -8,6 +8,6 @@ module.exports = {
 		const commandList = client.commands.map(cmd => `**!${cmd.name}** - ${cmd.description || "Sin descripción"}`).join("\n");
 
 		// Enviar el mensaje con la lista de comandos
-		return message.reply(`${commandList}`);
+		return message.reply(`${commandList} (Proximamente: !equipo,!competencia,!entrenar,!anime`);
 	}
 };
