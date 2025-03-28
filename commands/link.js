@@ -47,7 +47,7 @@ module.exports = {
 				const member = message.guild.members.cache.get(discordId);
 				// Store the verified osu! username
 				if (osuUser.discord === null) {
-					return message.reply(`${message.author.username} vincula tu discord en tu perfil de osu: https://osu.ppy.sh/home/account/edit`)
+					return message.reply(`${message.author.username} < pega esto en en tu perfil de osu (https://osu.ppy.sh/home/account/edit)`)
 				}
 				console.log("osu-discord:", osuUser.discord, "/discord", message.author.username);
 				if (osuUser.discord.toLowerCase().split("#")[0].trim() == message.author.username.toLowerCase()) {
@@ -59,7 +59,7 @@ module.exports = {
 						console.error("No se encontró al miembro en el servidor.");
 					}
 				} else {
-					return message.reply(`esa cuenta le pertenece a ${osuUser.discord}, no a ${username}`)
+					return message.reply(`${username} esta vinculado con ${osuUser.discord}, y no con ${message.author.username}`)
 				}
 
 				// Assign a country-based role
@@ -95,7 +95,7 @@ module.exports = {
 					}
 				} else if (userPlaystyle.length === 3) {
 					if (userPlaystyle.includes("mouse") && userPlaystyle.includes("keyboard") && userPlaystyle.includes("tablet")) {
-						await member.roles.add(mouseKeyboardTabletRole);
+						await member.roles.add("1354833504369643560");
 					} else {
 						await member.roles.add("1354833683668009143");
 					}
