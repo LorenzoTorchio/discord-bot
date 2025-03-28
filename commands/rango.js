@@ -1,20 +1,17 @@
 const axios = require("axios");
+const fs = require("fs");
 const rankRoles = require("../config/rank_roles.js");
 
 module.exports = {
 	name: "rango",
-	description: "asigna un color a tu apodo segun tu rango",
+	description: "Asigna un color a tu apodo segun tu rango",
 	async execute(message) {
-		const fs = require("fs");
-		const path = "./user_data.json";
+		const path = "./data/user_data.json";
 		const discordId = message.author.id;
 
 		// Check if the user has linked an osu! account
-		if (!fs.existsSync(path)) return message.reply("no existe base de datos");
+		if (!fs.existsSync(path)) return message.reply("No existe base de datos");
 		const userData = JSON.parse(fs.readFileSync(path, "utf8"));
-		if (!userData[discordId]) return message.reply("debes usar !link primero");
-
-		const osuUsername = userData[discordId];
 
 		// Get osu! API credentials
 		const clientId = process.env.OSU_CLIENT_ID;
@@ -31,41 +28,63 @@ module.exports = {
 
 			const token = tokenResponse.data.access_token;
 
-			// Fetch user data from osu! API
-			const response = await axios.get(`https://osu.ppy.sh/api/v2/users/${osuUsername}/osu`, {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			// Explicitly fetch all members to avoid caching issues
+			const members = await message.guild.members.fetch(); // This ensures we get all members, even offline ones
 
-			const osuUser = response.data;
-			const globalRank = osuUser.statistics.global_rank || 999999; // If unranked, set a high number
+			// Loop through each user in the user_data.json file and update their rank role
+			for (const discordId in userData) {
+				// Get osu! username for each user
+				const osuUsername = userData[discordId];
 
-			// Find the appropriate role based on rank
-			let assignedRoleId = rankRoles.default; // Default role
-			for (const rankThreshold in rankRoles) {
-				if (globalRank <= rankThreshold) {
-					assignedRoleId = rankRoles[rankThreshold];
-					break;
-				}
-			}
+				// Fetch user data from osu! API
+				try {
+					const response = await axios.get(`https://osu.ppy.sh/api/v2/users/${osuUsername}/osu`, {
+						headers: { Authorization: `Bearer ${token}` }
+					});
 
-			// Assign the role
-			const member = message.guild.members.cache.get(discordId);
-			if (member) {
-				// Remove any previous rank roles
-				for (const roleId of Object.values(rankRoles)) {
-					if (member.roles.cache.has(roleId)) {
-						await member.roles.remove(roleId);
+					const osuUser = response.data;
+					const globalRank = osuUser.statistics.global_rank || 999999; // If unranked, set a high number
+
+					let assignedRoleId = rankRoles.default; // Default role
+
+					// Get all the thresholds sorted in descending order
+					const thresholds = Object.keys(rankRoles).map(Number).sort((a, b) => b - a); // Sort in descending order
+
+					// Iterate over the thresholds in descending order and find the highest valid threshold
+					for (const threshold of thresholds) {
+						if (globalRank >= threshold) {
+							assignedRoleId = rankRoles[threshold]; // Assign the role for the highest rank that is lower than or equal to globalRank
+							break; // Once we find the correct rank, stop checking
+						}
 					}
-				}
 
-				// Add the new rank role
-				await member.roles.add(assignedRoleId);
-			} else {
-				message.reply("no pude asignarte un rol");
+					// Get member object for the current discordId
+					const member = await message.guild.members.fetch(discordId);
+					if (member) {
+						// Remove any previous rank roles
+						for (const roleId of Object.values(rankRoles)) {
+							if (member.roles.cache.has(roleId)) {
+								await member.roles.remove(roleId);
+							}
+						}
+
+						// Add the new rank role
+						await member.roles.add(assignedRoleId);
+						console.log(`Updated rank for ${member.user.tag} to ${globalRank}`);
+					} else {
+						console.log(`Member not found: ${discordId}`);
+					}
+				} catch (error) {
+					console.error(`Failed to fetch osu! data for ${osuUsername}: ${error.message}`);
+				}
 			}
+
+			// Notify that the update is done
+			message.reply("Los roles se han actualizado para todos los miembros con cuentas de osu!.");
+
 		} catch (error) {
 			console.error(error);
-			message.reply("error externo");
+			message.reply("Hubo un error al actualizar los roles.");
 		}
 	}
 };
