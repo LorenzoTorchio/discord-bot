@@ -1,14 +1,12 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const fs = require('fs'); // Módulo fs para leer y escribir archivos
-
-
-// Verificar si la habilidad ya tiene mapas
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
-	name: "agregar",
-	description: "Permite agregar mapas a la habilidad seleccionada",
+	data: new SlashCommandBuilder()
+		.setName("agregar")
+		.setDescription("Permite agregar mapas a la habilidad seleccionada"),
 	async execute(message) {
-		// Crear los botones para las habilidades
 		const row1 = new ActionRowBuilder().addComponents(
 			new ButtonBuilder().setCustomId('reading_lento').setLabel('Reading - Lento').setStyle(ButtonStyle.Primary),
 			new ButtonBuilder().setCustomId('reading_rapido').setLabel('Reading - Rápido').setStyle(ButtonStyle.Primary)
@@ -26,53 +24,56 @@ module.exports = {
 			new ButtonBuilder().setCustomId('jumps_punteria').setLabel('Jumps - Puntería').setStyle(ButtonStyle.Danger)
 		);
 
-		// Enviar el mensaje con los botones para que el usuario seleccione una habilidad
 		const reply = await message.reply({
 			content: "Selecciona una habilidad para agregar un mapa:",
 			components: [row1, row2, row3]
 		});
 
-		// Filtro para asegurarnos de que el mensaje provenga del usuario correcto
 		const filter = i => i.user.id === message.author.id;
 		const collector = reply.createMessageComponentCollector({ filter, time: 30000 });
 
 		collector.on('collect', async i => {
-			const selectedAbility = i.customId;  // Obtener la habilidad seleccionada
-			await i.deferUpdate(); // Deferir la respuesta para no bloquear la interacción
+			const selectedAbility = i.customId;
+			await i.deferUpdate();
 
-			// Solicitar al usuario el enlace del mapa
 			await i.followUp({
 				content: `Envía el enlace del mapa de osu! que deseas agregar para **${selectedAbility.replace(/_/g, ' ').toUpperCase()}**.`,
 				ephemeral: true
 			});
 
-			// Crear un colector para el enlace del mapa
 			const mapCollector = message.channel.createMessageCollector({
 				filter: m => m.author.id === message.author.id,
 				time: 30000
 			});
 
 			mapCollector.on('collect', async mapMessage => {
-				const mapUrl = mapMessage.content;
+				const mapUrl = mapMessage.content.trim();
+				const match = mapUrl.match(/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/);
 
-				// Leer el archivo beatmaps.js
-				fs.readFile('./data/beatmaps.js', 'utf8', (err, data) => {
-					if (err) {
+				if (!match) {
+					return mapMessage.reply("El enlace proporcionado no es válido. Asegúrate de enviar un enlace de un beatmap de osu! válido.");
+				}
+
+				const mapId = match[3];
+				const filePath = path.resolve(__dirname, '../data/beatmaps.json');
+
+				fs.readFile(filePath, 'utf8', (err, data) => {
+					if (err && err.code !== 'ENOENT') {
 						return mapMessage.reply("Hubo un error al leer el archivo de mapas.");
 					}
 
-
-					const beatmaps = require('../data/beatmaps.js');
-					// Verificar si la habilidad ya tiene mapas
+					const beatmaps = data ? JSON.parse(data) : {};
 					if (!beatmaps[selectedAbility]) {
 						beatmaps[selectedAbility] = [];
 					}
 
-					// Agregar el nuevo mapa
-					beatmaps[selectedAbility].push(mapUrl);
+					if (!beatmaps[selectedAbility].includes(mapId)) {
+						beatmaps[selectedAbility].push(mapId);
+					} else {
+						return mapMessage.reply("Este mapa ya ha sido agregado a esta habilidad.");
+					}
 
-					// Guardar los cambios en el archivo
-					fs.writeFile('./data/beatmaps.js', `module.exports = ${JSON.stringify(beatmaps, null, 2)};`, err => {
+					fs.writeFile(filePath, JSON.stringify(beatmaps, null, 2), err => {
 						if (err) {
 							return mapMessage.reply("Hubo un error al guardar el mapa.");
 						}
@@ -81,7 +82,6 @@ module.exports = {
 				});
 			});
 
-			// Manejar el fin del colector de mensajes
 			mapCollector.on('end', collected => {
 				if (collected.size === 0) {
 					message.reply("No enviaste ningún enlace de mapa a tiempo.");
@@ -89,7 +89,6 @@ module.exports = {
 			});
 		});
 
-		// Manejar el fin del colector de habilidades
 		collector.on('end', collected => {
 			if (collected.size === 0) {
 				message.reply("No seleccionaste ninguna habilidad a tiempo.");
@@ -97,3 +96,4 @@ module.exports = {
 		});
 	}
 };
+

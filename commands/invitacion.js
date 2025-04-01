@@ -1,8 +1,12 @@
+const { SlashCommandBuilder } = require('discord.js');
+
 module.exports = {
-	name: "invitacion",
-	description: "muestra la invitacion del servidor",
-	async execute(message) {
-		const invite = "discord.gg/jAHtCbxyCZ"
-		return message.reply(invite);
+	data: new SlashCommandBuilder()
+		.setName("invitacion")
+		.setDescription("Envía la unica invitación del servidor")
+	,
+	async execute(interaction) {
+		const invite = "https://discord.gg/jAHtCbxyCZ";
+		return interaction.reply(invite);
 	}
 };

@@ -5,7 +5,7 @@ module.exports = {
 
 		if (verifyChannel) {
 			setTimeout(() => {
-				verifyChannel.send(`Bienvenidx <@${member.user.id}>! Verificate usando \`!link <tu_nombre_de_osu>\`.`);
+				verifyChannel.send(`Bienvenidx <@${member.user.id}>! Verificate usando \`/verificar \`.`);
 			}, 1000);
 		} else {
 			console.error("No se encontró el canal de verificación.");
