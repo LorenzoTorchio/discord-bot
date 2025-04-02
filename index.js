@@ -22,7 +22,6 @@ for (const file of commandFiles) {
 	const command = require(filePath);
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
-		console.log(`Comando cargado: ${command.data.name}`);
 	} else {
 		console.warn(`Advertencia: El comando en ${filePath} no tiene las propiedades necesarias.`);
 	}

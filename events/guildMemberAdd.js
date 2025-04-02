@@ -1,12 +1,9 @@
 module.exports = {
 	name: "guildMemberAdd",
 	async execute(client, member) {
-		const verifyChannel = client.channels.cache.get("1354125067562516510");
-
-		if (verifyChannel) {
-			setTimeout(() => {
-				verifyChannel.send(`Bienvenidx <@${member.user.id}>! Verificate usando \`/verificar \`.`);
-			}, 1000);
+		const welcomeChannel = client.channels.cache.get("1353889728755273758");
+		if (welcomeChannel) {
+			welcomeChannel.send(`Bienvenidx <@${member.user.id}>!`);
 		} else {
 			console.error("No se encontró el canal de verificación.");
 		}

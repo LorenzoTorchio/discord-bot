@@ -4,8 +4,15 @@ const path = "./data/user_data.json";
 const { updateRanks } = require("../utils/update_ranks.js");
 const latamRoles = require("../config/country_roles.js");
 const { SlashCommandBuilder } = require("discord.js");
-const playerRole = "1348444710921961553";
 const { assignPlaystyleRole } = require("../utils/add_playstyle.js");
+const { addTeam } = require("../utils/add_team.js"); // Placeholder for the future function
+
+const playmodeRoles = {
+	"osu": "1348444710921961553",
+	"mania": "1355270246805799063",
+	"taiko": "1355270153092333628",
+	"fruits": "1355270176874041456"
+};
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -85,7 +92,12 @@ module.exports = {
 			}
 
 			await member.setNickname(osuUser.username);
-			await member.roles.add(playerRole);
+
+			// Asignar rol basado en el playmode
+			const playmode = osuUser.playmode || "osu";
+			if (playmodeRoles[playmode]) {
+				await member.roles.add(playmodeRoles[playmode]);
+			}
 
 			if (latamRoles[osuUser.country_code]) {
 				await member.roles.add(latamRoles[osuUser.country_code]);
@@ -98,6 +110,11 @@ module.exports = {
 				await welcomeChannel.send(`🎉 ¡Bienvenidx **${osuUser.username}** al servidor!`);
 			} else {
 				console.error("No se encontró el canal de bienvenida.");
+			}
+
+			// Verificar si el jugador tiene equipo
+			if (osuUser.team) {
+				await addTeam(member, osuUser.team);
 			}
 
 			// Actualizar rangos usando la función
