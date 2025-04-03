@@ -1,10 +1,10 @@
-const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from "discord.js";
 
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName("invitacion")
-		.setDescription("Envía la unica invitación del servidor")
-	,
+		.setDescription("Envía la única invitación del servidor"),
+
 	async execute(interaction) {
 		const invite = "https://discord.gg/jAHtCbxyCZ";
 		return interaction.reply(invite);

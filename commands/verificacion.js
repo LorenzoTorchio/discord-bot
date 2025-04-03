@@ -1,20 +1,31 @@
-const fs = require("fs").promises;
-const axios = require("axios");
-const path = "./data/user_data.json";
-const { updateRanks } = require("../utils/update_ranks.js");
-const latamRoles = require("../config/country_roles.js");
-const { SlashCommandBuilder } = require("discord.js");
-const { assignPlaystyleRole } = require("../utils/add_playstyle.js");
-const { addTeam } = require("../utils/add_team.js"); // Placeholder for the future function
+import fs from "fs/promises";
+import axios from "axios";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const playmodeRoles = {
-	"osu": "1348444710921961553",
-	"mania": "1355270246805799063",
-	"taiko": "1355270153092333628",
-	"fruits": "1355270176874041456"
-};
+import { SlashCommandBuilder } from "discord.js";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const userDataPath = path.join(__dirname, "../data/user_data.json");
 
-module.exports = {
+import latamRoles from "../config/country_roles.js";
+import playmodeRoles from "../config/playmode_roles.js";
+import playstyleRoles from "../config/playstyle_roles.js";
+
+import addTeam from "../utils/add_team.js";
+import updateRanks from "../utils/update_ranks.js";
+
+async function loadUserData() {
+	try {
+		const data = await fs.readFile(userDataPath, "utf8");
+		return JSON.parse(data);
+	} catch (error) {
+		console.warn(error);
+		return {};
+	}
+}
+
+export default {
 	data: new SlashCommandBuilder()
 		.setName("verificar")
 		.setDescription("Verificación con tu usuario de osu!")
@@ -25,22 +36,13 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-		await interaction.deferReply({ ephemeral: true });
-
-		if (!["1354125067562516510", "1349078559129600063"].includes(interaction.channelId)) {
-			return interaction.editReply({ content: "Este comando solo puede usarse en los canales permitidos." });
-		}
+		await interaction.deferReply({ flags: 64 });
 
 		const username = interaction.options.getString("usuario-de-osu");
 		const discordId = interaction.user.id;
-		let userData = {};
 
-		try {
-			const data = await fs.readFile(path, "utf8");
-			userData = JSON.parse(data);
-		} catch (err) {
-			console.warn("No se encontró el archivo de usuarios o está vacío, creando uno nuevo.");
-		}
+		// Cargar datos de usuarios dinámicamente
+		const userData = await loadUserData();
 
 		if (userData[discordId]) {
 			return interaction.editReply({ content: "Ya vinculaste tu cuenta." });
@@ -85,7 +87,7 @@ module.exports = {
 
 			// Guardar osu! ID en lugar del nombre de usuario
 			userData[discordId] = osuUser.id;
-			await fs.writeFile(path, JSON.stringify(userData, null, 2));
+			await fs.writeFile(userDataPath, JSON.stringify(userData, null, 2));
 
 			if (!member) {
 				return interaction.editReply({ content: "❌ No se encontró tu usuario en el servidor." });
@@ -99,27 +101,34 @@ module.exports = {
 				await member.roles.add(playmodeRoles[playmode]);
 			}
 
+			// Asignar rol basado en ubicacion
 			if (latamRoles[osuUser.country_code]) {
 				await member.roles.add(latamRoles[osuUser.country_code]);
 			}
 
-			await interaction.editReply({ content: `✅ **${osuUser.username}** ha sido verificado y vinculado correctamente! 🎉` });
-
-			const welcomeChannel = interaction.guild.channels.cache.get("1353889728755273758");
-			if (welcomeChannel) {
-				await welcomeChannel.send(`🎉 ¡Bienvenidx **${osuUser.username}** al servidor!`);
+			if (!osuUser.playstyle || osuUser.playstyle.length === 0) {
+				console.log(`🟢 ${member.user.tag} no tiene un estilo configurado.`);
 			} else {
-				console.error("No se encontró el canal de bienvenida.");
+				// Assign new playstyle roles
+				for (const playstyle of osuUser.playstyle) {
+					if (playstyleRoles[playstyle]) {
+						await member.roles.add(playstyleRoles[playstyle]);
+						console.log(`✅ Asignado rol ${playstyle} a ${member.user.tag}`);
+					}
+				}
 			}
 
-			// Verificar si el jugador tiene equipo
-			if (osuUser.team) {
-				await addTeam(member, osuUser.team);
+			if (!osuUser.team) {
+				console.log(`${member.user.tag} no tiene un equipo`)
+			} else {
+				console.log(osuUser.team)
+				await addTeam(member, osuUser, interaction.guild)
 			}
+
+			await interaction.editReply({ content: `✅ **${osuUser.username}** ha sido verificado y vinculado correctamente! 🎉` });
 
 			// Actualizar rangos usando la función
 			await updateRanks(interaction.guild);
-			await assignPlaystyleRole(member);
 		} catch (error) {
 			console.error(error);
 			await interaction.editReply({ content: "❌ Ocurrió un error al vincular tu cuenta. Inténtalo más tarde." });

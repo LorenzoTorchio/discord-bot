@@ -1,48 +1,54 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
+import { ContextMenuCommandBuilder, ApplicationCommandType } from 'discord.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const warnsFilePath = path.join(__dirname, '../../data/warns.json');
+const COOLDOWN_TIME = 90 * 60 * 1000; // 90 minutos en milisegundos
+const WARN_CHANNEL_ID = '1356645246825398463'; // Reemplaza con tu canal de avisos
 
-const warnsFilePath = path.join(__dirname, '../../data/warns.js');
-const COOLDOWN_TIME = 90 * 60 * 1000; // 90 minutes in milliseconds
-const WARN_CHANNEL_ID = '1356645246825398463'; // Replace with your channel ID
-
-// Load warns data
-function loadWarns() {
+// Cargar advertencias desde el archivo JSON
+async function loadWarns() {
 	try {
-		if (!fs.existsSync(warnsFilePath)) {
-			fs.writeFileSync(warnsFilePath, JSON.stringify({}), 'utf-8');
-		}
-		const fileContent = fs.readFileSync(warnsFilePath, 'utf-8');
-		return fileContent ? JSON.parse(fileContent) : {};
+		const data = await fs.readFile(warnsFilePath, 'utf-8');
+		return JSON.parse(data);
 	} catch (error) {
-		console.error('Error loading warns:', error);
+		if (error.code === 'ENOENT') {
+			await saveWarns({});
+			return {};
+		}
+		console.error('❌ Error al cargar warns.json:', error);
 		return {};
 	}
 }
 
-// Save warns data
-function saveWarns(data) {
+// Guardar advertencias en el archivo JSON
+async function saveWarns(data) {
 	try {
-		fs.writeFileSync(warnsFilePath, JSON.stringify(data, null, 2), 'utf-8');
+		await fs.writeFile(warnsFilePath, JSON.stringify(data, null, 2), 'utf-8');
 	} catch (error) {
-		console.error('Error saving warns:', error);
+		console.error('❌ Error al guardar warns.json:', error);
 	}
 }
 
-module.exports = {
+export default {
 	data: new ContextMenuCommandBuilder()
 		.setName('Aviso')
 		.setType(ApplicationCommandType.User),
 
 	async execute(interaction) {
-		const warner = interaction.user; // The person who issued the warn
+		const warner = interaction.user; // Usuario que advierte
 		const warnedUser = interaction.targetUser;
-		if (warnedUser.bot) return interaction.reply({ content: "No puedes advertir a un bot.", flags: 64 });
 
-		const warns = loadWarns();
+		if (warnedUser.bot) {
+			return interaction.reply({ content: "🚫 No puedes advertir a un bot.", ephemeral: true });
+		}
+
+		const warns = await loadWarns();
 		const now = Date.now();
 
-		// Ensure the structure exists
+		// Asegurar que la estructura de advertencias existe
 		if (!warns[warnedUser.id]) {
 			warns[warnedUser.id] = { warns: 0, issuedBy: {} };
 		}
@@ -50,39 +56,39 @@ module.exports = {
 			warns[warnedUser.id].issuedBy[warner.id] = { count: 0, lastWarn: 0 };
 		}
 
-		// Get last warn timestamp for this warner
+		// Comprobar el tiempo de cooldown
 		const lastWarn = warns[warnedUser.id].issuedBy[warner.id].lastWarn;
-
-		// Check cooldown
 		if (now - lastWarn < COOLDOWN_TIME) {
 			const remainingTime = Math.ceil((COOLDOWN_TIME - (now - lastWarn)) / 60000);
 			return interaction.reply({
-				content: `Ya advertiste a este usuario recientemente. Intenta de nuevo en ${remainingTime} minutos.`,
-				flags: 64
+				content: `⚠️ Ya advertiste a este usuario recientemente. Intenta de nuevo en ${remainingTime} minuto(s).`,
+				ephemeral: true
 			});
 		}
 
-		// Apply the warning
+		// Aplicar la advertencia
 		warns[warnedUser.id].warns += 1;
 		warns[warnedUser.id].issuedBy[warner.id].count += 1;
 		warns[warnedUser.id].issuedBy[warner.id].lastWarn = now;
-		saveWarns(warns);
+		await saveWarns(warns);
 
 		try {
-			// Get the channel where warnings should be sent
+			// Obtener el canal de avisos
 			const warnChannel = interaction.guild.channels.cache.get(WARN_CHANNEL_ID);
 			if (!warnChannel) {
-				console.error('Error: Channel not found.');
-				return interaction.reply({ content: "Error: No se pudo encontrar el canal de avisos.", flags: 64 });
+				console.error('❌ Error: Canal de avisos no encontrado.');
+				return interaction.reply({ content: "❌ Error: No se pudo encontrar el canal de avisos.", ephemeral: true });
 			}
 
-			// Send the warning message
-			await warnChannel.send(`⚠️ ${warnedUser} ha recibido una advertencia. Ahora tiene ${warns[warnedUser.id].warns} aviso(s).`);
+			// Enviar el mensaje de advertencia al canal
+			await warnChannel.send(`⚠️ ${warnedUser} ha recibido una advertencia. Ahora tiene **${warns[warnedUser.id].warns}** aviso(s).`);
 
-			// Acknowledge interaction without response
+			// Confirmar la acción al moderador
+			await interaction.reply({ content: `✅ Advertencia aplicada a ${warnedUser}.`, ephemeral: true });
 
 		} catch (error) {
-			console.error('Error:', error);
+			console.error('❌ Error al enviar el aviso:', error);
+			await interaction.reply({ content: "❌ Hubo un error al registrar la advertencia.", ephemeral: true });
 		}
 	},
 };

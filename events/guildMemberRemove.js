@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	name: "guildMemberRemove",
 	async execute(client, member) {
 		const channel = client.channels.cache.get("1353889767892189234")

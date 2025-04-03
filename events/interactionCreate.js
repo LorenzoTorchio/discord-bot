@@ -1,20 +1,25 @@
-const { InteractionType } = require('discord.js');
 
-module.exports = {
-	name: 'interactionCreate',
-	async execute(interaction) {
-		// Check if the interaction is an Application Command
-		if (interaction.type !== InteractionType.ApplicationCommand) return;
+import { InteractionType } from "discord.js";
+import agregarCommand from "../commands/context/agregar.js"; // Asegúrate de importar el comando "Agregar"
 
-		// Proceed if it's a valid command
-		const command = interaction.client.commands.get(interaction.commandName);
-		if (!command) return;
+export default {
+	name: "interactionCreate",
+	async execute(client, interaction) {
+		console.log("⚡ Received interaction:", interaction.commandName || interaction.customId, "Type:", interaction.type);
 
-		try {
+		if (interaction.type === InteractionType.ApplicationCommand) {
+			console.log("✅ This is an Application Command.");
+			const command = client.commands.get(interaction.commandName);
+			if (!command) return console.log("❌ Command not found.");
 			await command.execute(interaction);
-		} catch (error) {
-			console.error(error);
-			await interaction.reply({ content: 'There was an error executing the command.', ephemeral: true });
+		} else if (interaction.type === InteractionType.ModalSubmit) {
+			console.log("✅ This is a Modal Submission.");
+			if (interaction.customId.startsWith("addBeatmap|")) {
+				await agregarCommand.modalSubmit(interaction);
+			} else {
+				console.log("❌ Modal handler not found.");
+			}
 		}
-	}
+	},
 };
+
