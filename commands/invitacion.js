@@ -7,6 +7,6 @@ export default {
 
 	async execute(interaction) {
 		const invite = "https://discord.gg/jAHtCbxyCZ";
-		return interaction.reply(invite);
+		return interaction.reply({ content: invite, ephemeral: true });
 	}
 };

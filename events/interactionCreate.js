@@ -1,6 +1,5 @@
-
 import { InteractionType } from "discord.js";
-import agregarCommand from "../commands/context/agregar.js"; // Asegúrate de importar el comando "Agregar"
+import modalSubmit from "../utils/modalSubmit.js";
 
 export default {
 	name: "interactionCreate",
@@ -14,12 +13,7 @@ export default {
 			await command.execute(interaction);
 		} else if (interaction.type === InteractionType.ModalSubmit) {
 			console.log("✅ This is a Modal Submission.");
-			if (interaction.customId.startsWith("addBeatmap|")) {
-				await agregarCommand.modalSubmit(interaction);
-			} else {
-				console.log("❌ Modal handler not found.");
-			}
+			await modalSubmit(interaction);
 		}
 	},
 };
-

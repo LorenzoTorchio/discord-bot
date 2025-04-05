@@ -1,7 +1,7 @@
 {
-    "habilidad": {
-        "alt": []
-    },
+    "habilidad": [
+        "https://osu.ppy.sh/beatmapsets/2323493"
+    ],
     "torneo": [
         "https://osu.ppy.sh/beatmapsets/1606970"
     ]
