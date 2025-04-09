@@ -3,7 +3,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-const path = "./data/user_data.json";
+const path = "./data/users.json";
 
 async function updateUserData() {
 	try {

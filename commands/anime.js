@@ -11,7 +11,7 @@ const animeDataPath = path.join(__dirname, '../data/anime.json');
 export default {
 	data: new SlashCommandBuilder()
 		.setName('anime')
-		.setDescription('Muestra los animes que un usuario o dos usuarios de AniList están viendo')
+		.setDescription('Muestra los anime de interes (usuarios registrados en /AniList)')
 		.addUserOption(option =>
 			option.setName('usuario1')
 				.setDescription('Menciona al primer usuario para ver su lista de anime')
@@ -42,13 +42,10 @@ export default {
 		}
 
 		const userName1 = animeData[user1.id];
-		const animeList1 = await fetchAnimeList(userName1);
-		if (!animeList1) {
-			return interaction.reply(`${user1.nickname || user1.user.username} no está viendo ningún anime en AniList.`);
-		}
+		const animeList1 = await fetchAnimeList(userName1, "Watching");
 
 		if (!user2) {
-			return interaction.reply(`**${user1.nickname || user1.user.username} está viendo:**\n${animeList1.join('\n')}`);
+			return interaction.reply(`**${user1.nickname || user1.user.username} está viendo:**\n${animeList1 ? animeList1.join('\n') : 'No está viendo ningún anime.'}`);
 		}
 
 		if (!animeData[user2.id]) {
@@ -56,24 +53,31 @@ export default {
 		}
 
 		const userName2 = animeData[user2.id];
-		const animeList2 = await fetchAnimeList(userName2);
-		if (!animeList2) {
-			return interaction.reply(`${user2.nickname || user2.user.username} no está viendo ningún anime en AniList.`);
+		const animeList2 = await fetchAnimeList(userName2, "Watching");
+
+		const commonAnimes = animeList1 && animeList2 ? animeList1.filter(anime => animeList2.includes(anime)) : [];
+
+		if (commonAnimes.length > 0) {
+			return interaction.reply(`**${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} están viendo en común:**\n${commonAnimes.join('\n')}`);
 		}
 
-		const commonAnimes = animeList1.filter(anime => animeList2.includes(anime));
-		if (commonAnimes.length === 0) {
-			return interaction.reply(`${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en AniList.`);
+		// Si no hay anime en común en Watching, buscar en Planning
+		const planningList1 = await fetchAnimeList(userName1, "Planning");
+		const planningList2 = await fetchAnimeList(userName2, "Planning");
+		const commonPlanning = planningList1 && planningList2 ? planningList1.filter(anime => planningList2.includes(anime)) : [];
+
+		if (commonPlanning.length > 0) {
+			return interaction.reply(`${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo", pero sí en "Planeado":\n${commonPlanning.join('\n')}`);
 		}
 
-		return interaction.reply(`**${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} están viendo en común:**\n${commonAnimes.join('\n')}`);
+		return interaction.reply(`${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo" ni en "Planeado".`);
 	}
 };
 
-async function fetchAnimeList(userName) {
+async function fetchAnimeList(userName, state) {
 	const query = {
 		query: `query ($userName: String) { 
-            MediaListCollection(userName: $userName, type: ANIME, status: CURRENT) { 
+            MediaListCollection(userName: $userName, type: ANIME) { 
                 lists { 
                     name 
                     entries { 
@@ -99,12 +103,8 @@ async function fetchAnimeList(userName) {
 			return null;
 		}
 
-		const watchingList = data.data.MediaListCollection.lists.find(list => list.name === 'Watching');
-		if (!watchingList || watchingList.entries.length === 0) {
-			return null;
-		}
-
-		return watchingList.entries.map(entry => entry.media.title.romaji);
+		const list = data.data.MediaListCollection.lists.find(list => list.name === state);
+		return list && list.entries.length > 0 ? list.entries.map(entry => entry.media.title.romaji) : null;
 	} catch (error) {
 		console.error(error);
 		return null;

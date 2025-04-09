@@ -1,19 +1,21 @@
 import fs from "fs/promises";
 import axios from "axios";
-import path from "path";
-import { fileURLToPath } from "url";
+
 
 import { SlashCommandBuilder } from "discord.js";
+
+import path from "path";
+import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const userDataPath = path.join(__dirname, "../data/user_data.json");
+const userDataPath = path.join(__dirname, "../data/users.json");
 
-import latamRoles from "../config/country_roles.js";
-import playmodeRoles from "../config/playmode_roles.js";
-import playstyleRoles from "../config/playstyle_roles.js";
+import latamRoles from "../config/countryRoles.js";
+import playmodeRoles from "../config/playmodeRoles.js";
+import playstyleRoles from "../config/playstyleRoles.js";
 
-import addTeam from "../utils/add_team.js";
-import updateRanks from "../utils/update_ranks.js";
+import addTeam from "../utils/addTeam.js";
+import updateRanks from "../utils/updateRanks.js";
 
 async function loadUserData() {
 	try {
@@ -27,8 +29,8 @@ async function loadUserData() {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName("verificar")
-		.setDescription("Verificación con tu usuario de osu!")
+		.setName("enlazar")
+		.setDescription("Enlaza tu cuenta de discord con tu usuario de osu!")
 		.addStringOption(option =>
 			option.setName("usuario-de-osu")
 				.setDescription("Ingresa tu usuario de osu! enlazado con tu Discord")

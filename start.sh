@@ -1,2 +1,2 @@
-node ./utils/deploycommands.js
+node ./utils/deployCommands.js
 node index.js

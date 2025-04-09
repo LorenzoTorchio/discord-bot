@@ -1,0 +1,13 @@
+[
+  {
+    "title": "Huevo frito",
+    "description": "Huevo frito",
+    "ingredients": [
+      "huevo"
+    ],
+    "steps": [
+      "frito"
+    ],
+    "category": "desayuno"
+  }
+]

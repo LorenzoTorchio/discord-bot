@@ -110,7 +110,7 @@ function generateAsciiCalendar(userData) {
 export default {
 	data: new SlashCommandBuilder()
 		.setName("calendario")
-		.setDescription("Muestra el calendario de sesiones de osu!"),
+		.setDescription("Muestra tu calendario de jugadas del mes en osu!"),
 
 	async execute(interaction) {
 		await interaction.deferReply();

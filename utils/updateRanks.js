@@ -1,10 +1,10 @@
 import axios from "axios";
 import fs from "fs/promises";
-import rankRoles from "../config/rank_roles.js";
+import rankRoles from "../config/rankRoles.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const path = "./data/user_data.json";
+const path = "./data/users.json";
 
 // Función mejorada para obtener el rol según el rango
 const getRankRole = (globalRank, rankRoles) => {

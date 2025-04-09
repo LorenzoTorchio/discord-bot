@@ -1,10 +1,15 @@
-const { SlashCommandBuilder } = require("discord.js");
-const axios = require("axios");
-const fs = require("fs");
-const path = require("path");  // Import path module
+import { SlashCommandBuilder } from "discord.js";
+import axios from "axios";
+import fs from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Use path.resolve to get the absolute path
-const userDataPath = path.resolve(__dirname, "../data/user_data.json");
+const userDataPath = resolve(__dirname, "../data/user_data.json");
 
 const calculateDifficulty = (hoursPlayed) => {
 	const performance = 37 * Math.pow(hoursPlayed, 0.75);
@@ -12,7 +17,7 @@ const calculateDifficulty = (hoursPlayed) => {
 	return Math.round(difficulty * 100) / 100;
 };
 
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName("dificultad")
 		.setDescription("Calcula la dificultad recomendada según las horas jugadas en osu! (para usar en competencias)"),

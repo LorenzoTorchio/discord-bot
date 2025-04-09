@@ -3,7 +3,7 @@ import modalSubmit from "../../utils/modalSubmit.js";
 
 export default {
 	data: new ContextMenuCommandBuilder()
-		.setName("Agregar")
+		.setName("Agregar Mapa")
 		.setType(ApplicationCommandType.Message),
 
 	async execute(interaction) {

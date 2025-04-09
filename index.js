@@ -1,11 +1,8 @@
-
 import dotenv from "dotenv"; dotenv.config();
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { Client, GatewayIntentBits, Collection } from "discord.js";
-
-// Obtener __dirname en ESM
+import { Client, GatewayIntentBits, Collection, Partials } from "discord.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,8 +12,11 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildVoiceStates
-	]
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.GuildMessageReactions
+	],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 client.commands = new Collection();
@@ -56,10 +56,4 @@ for (const file of eventFiles) {
 }
 
 //console.log("✅ Registered Commands:", [...client.commands.keys()]);
-
-client.once('ready', () => {
-	console.log('Ready!');
-});
-
 client.login(process.env.TOKEN);
-
