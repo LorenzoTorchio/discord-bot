@@ -5,6 +5,6 @@ export default {
 	once: true,
 	execute(client) {
 		console.log(`✅ Logged in as ${client.user.tag}`);
-		////setInterval(() => checkOsuPresence(client, subscribers), 1000);
+		setInterval(() => checkOsuPresence(client), 1000);
 	},
 }; 

@@ -55,5 +55,4 @@ for (const file of eventFiles) {
 	client.on(event.default.name, (...args) => event.default.execute(client, ...args));
 }
 
-//console.log("✅ Registered Commands:", [...client.commands.keys()]);
 client.login(process.env.TOKEN);

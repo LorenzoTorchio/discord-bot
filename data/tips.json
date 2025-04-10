@@ -37,5 +37,15 @@
     "tip": "Siempre senti las teclas",
     "explanation": "Evitar levantar los dedos de las teclas hace que puedas pulsarlas antes, ayudando a la velocidad y el control.",
     "category": "streams, tapping"
+  },
+  {
+    "tip": "Burst antes que Streams",
+    "explanation": "Empeza de a poco, con bursts de 3 o 4 notas, y no tan rapido\n\nanda aumentando gradualmente la cantidad de notas y velocidad",
+    "category": "streams"
+  },
+  {
+    "tip": "Segun la Wiki de osu:",
+    "explanation": "Juega eficientemente y descubre qué estilo de juego te funciona mejor. \nCéntrate en conseguir unas pocas puntuaciones excepcionales en lugar de acumular cientos de puntuaciones mediocres. \nIntenta mejorar tu precisión. Incluso un 1% marca una gran diferencia. Intenta conseguir combos más altos. \nLos combos completos o las puntuaciones SS te dan muchísimas puntuaciones.",
+    "category": "rango"
   }
 ]

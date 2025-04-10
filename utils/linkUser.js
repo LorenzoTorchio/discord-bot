@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import axios from "axios";
 import getOsuToken from "./getOsuToken.js";
-
+import giveRoles from "./giveRoles.js";
 const userDataPath = "./data/users.json";
 
 async function loadUserData() {
