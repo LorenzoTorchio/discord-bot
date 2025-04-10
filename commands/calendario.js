@@ -2,27 +2,35 @@ import fs from "fs";
 import axios from "axios";
 import path from "path";
 import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
+import getOsuToken from "../utils/getOsuToken.js";
+import countryRoles from "../config/countryRoles.js";
+import { DateTime } from "luxon";
 
-const { OSU_CLIENT_ID, OSU_CLIENT_SECRET } = process.env;
 const TRACKER_PATH = "./data/tracker";
-const USER_DATA_PATH = "./data/user_data.json";
+const USER_DATA_PATH = "./data/users.json";
+const TIMEZONES = {
+	"AR": "America/Argentina/Buenos_Aires",
+	"UY": "America/Montevideo",
+	"CL": "America/Santiago",
+	"VE": "America/Caracas",
+	"CO": "America/Bogota",
+	"EC": "America/Guayaquil",
+	"MX": "America/Mexico_City",
+	"PE": "America/Lima",
+	"PY": "America/Asuncion",
+	"DO": "America/Santo_Domingo",
+	"BO": "America/La_Paz",
+	"HO": "America/Tegucigalpa",
+	"PA": "America/Panama",
+	"CU": "America/Havana",
+	"CR": "America/Costa_Rica",
+	"GT": "America/Guatemala",
+	"NI": "America/Managua",
+	"HN": "America/Tegucigalpa",
+	"SV": "America/El_Salvador"
+};
 const DAYS = ["D", "L", "M", "X", "J", "V", "S"];
 const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-async function getOsuToken() {
-	try {
-		const { data } = await axios.post("https://osu.ppy.sh/oauth/token", {
-			client_id: OSU_CLIENT_ID,
-			client_secret: OSU_CLIENT_SECRET,
-			grant_type: "client_credentials",
-			scope: "public"
-		});
-		return data.access_token;
-	} catch (error) {
-		console.error("Error obteniendo el token de osu!:", error);
-		return null;
-	}
-}
 
 async function getUserPlayData(osuId, token) {
 	try {
@@ -53,11 +61,26 @@ function writeJsonFile(filePath, data) {
 	}
 }
 
-function updateTrackerFile(userId, playcount) {
+function getUserCountryCode(interaction) {
+	const userRoles = interaction.member.roles.cache.map(role => role.id);
+	return Object.keys(countryRoles).find(code => userRoles.includes(countryRoles[code])) || "default";
+}
+
+function updateTrackerFile(userId, playcount, interaction) {
+	const countryCode = getUserCountryCode(interaction);
+	const timezone = TIMEZONES[countryCode] || "UTC";
+	const now = DateTime.now().setZone(timezone);
+	const today = now.toISODate();
+	const yesterday = now.minus({ days: 1 }).toISODate();
+
 	const filePath = path.join(TRACKER_PATH, `${userId}.json`);
 	if (!fs.existsSync(TRACKER_PATH)) fs.mkdirSync(TRACKER_PATH, { recursive: true });
 	const userData = readJsonFile(filePath);
-	const today = new Date().toISOString().split("T")[0];
+
+	if (!userData[yesterday]) {
+		userData[yesterday] = { playcount };
+	}
+
 	userData[today] = { playcount };
 	writeJsonFile(filePath, userData);
 }
@@ -126,7 +149,7 @@ export default {
 		const playcount = await getUserPlayData(osuId, token);
 		if (playcount === null) return interaction.editReply("No se pudo obtener la información de juego.");
 
-		updateTrackerFile(osuId, playcount);
+		updateTrackerFile(osuId, playcount, interaction);
 
 		const trackerData = readJsonFile(path.join(TRACKER_PATH, `${osuId}.json`));
 		const calendarAscii = generateAsciiCalendar(trackerData);

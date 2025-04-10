@@ -1,11 +1,11 @@
+# Testeando
+- Calendario
+
 # Desarrollando 
-## Calendario
-corregir por huso horario
-rendimiento mensual
+- Modificar consejos, hacerlo cuaderno/biblio, combinar recetas, seccion diccionario, recursos (añadir contextual), categoria, seccion. 
 
 # Road Map
 ## Funcionalidades generales
-- Modificar consejos, hacerlo cuaderno/biblio, combinar recetas, seccion diccionario, recursos (añadir contextual), categoria, seccion. 
 - Funcionalidad de enviar mensaje
 - Calcular play
 - Buscar (buscar mapa segun categoria para crear room tematico)
@@ -19,9 +19,8 @@ rendimiento mensual
     - farm
     - medallas
 - Competencia (Duelo, Torneo, Equipos, BR) ( segun la mayoria de roles por participante ).
-- Estadisticas (basadas en top 100, segun mapas especificos, Victorias) 
+- Estadisticas (basadas en top 100, segun mapas especificos, Victorias, rendimiento mensual) 
 - Prueba (Envia el link de la playlist para medirse la habiliad acorde mapas predeterminados)
-
 ## Funcionalidades especificas
 ### duelo (contextual)
 - con o sin handicap
@@ -67,7 +66,7 @@ Informacion
 Beatmaps
 
     osu!search : Advanced search for osu! beatmaps
-    Mirrors: Beatconnect     chimu.moe    
+    Mirrors: Beatconnect     chimu.moe    https://nerinyan.moe/main
     osu!Collector : Share and download collections
     CollectionManager : Collection manager for osu! - make sure to read the tutorial before using it
     JoSu! : Website that can preview any beatmap, with a timeline
