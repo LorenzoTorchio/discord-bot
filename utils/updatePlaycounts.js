@@ -7,8 +7,8 @@ import { DateTime } from "luxon";
 dotenv.config();
 
 const { OSU_CLIENT_ID, OSU_CLIENT_SECRET } = process.env;
-const TRACKER_PATH = "./data/tracker";
-const USER_DATA_PATH = "./data/users.json";
+const TRACKER_PATH = "../data/tracker";
+const USER_DATA_PATH = "../data/users.json";
 
 const countryTimezones = {
 	"AR": "America/Argentina/Buenos_Aires",

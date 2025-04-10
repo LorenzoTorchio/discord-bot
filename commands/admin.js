@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
-import deleteMessages from "../utils/deleteMessages.js";
-import updatePlaycounts from "../utils/updatePlaycounts.js"
-import updateRanks from "../utils/updateRanks.js"
+import assignRoles from "../utils/assignRoles.js";
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName("admin")
@@ -13,7 +12,8 @@ export default {
 				.addChoices(
 					{ name: "Actualizar playcount", value: "playcount" },
 					{ name: "Actualizar rangos", value: "ranks" },
-					{ name: "Borrar mensajes", value: "purge" }
+					{ name: "Borrar mensajes", value: "purge" },
+					{ name: "Asignar roles", value: "assignRoles" }
 				)
 		)
 		.addIntegerOption(option =>
@@ -32,14 +32,19 @@ export default {
 
 		switch (action) {
 			case "playcount":
-				return updatePlaycounts();
+				await updatePlaycounts();
+				break;
 			case "ranks":
-				return updateRanks(interaction.guild);
+				await updateRanks(interaction.guild);
+				break;
 			case "purge":
 				await deleteMessages(interaction, cantidad);
-				return;
+				break;
+			case "assignRoles":
+				await assignRoles(interaction.guild);
+				break
 			default:
-				return interaction.editReply("❌ Comando no válido.");
+				interaction.editReply("❌ Comando no válido.");
 		}
 	}
 };

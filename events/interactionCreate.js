@@ -1,6 +1,6 @@
 import { InteractionType } from "discord.js";
-import { handleCommand } from "./functions/handleCommand.js";
-import { handleModal } from "./functions/handleModal.js";
+import { handleCommand } from "../utils/handleCommand.js";
+import { handleModal } from "../utils/handleModal.js";
 
 export default {
 	name: "interactionCreate",

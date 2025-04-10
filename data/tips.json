@@ -14,24 +14,9 @@
     "category": "git gud"
   },
   {
-    "tip": "Quieres Llegar al top 10k",
-    "explanation": "Apreta el orto y esforzate por que te va a costar un choto",
-    "category": "Nose",
-    "voters": [
-      "1257414054201524224",
-      "375437559855054860"
-    ],
-    "votes": 0
-  },
-  {
     "tip": "alterna si no tenes velocidad",
     "explanation": "☝️☝️☝️☝️☝️☝️☝️☝️",
     "category": "tapping"
-  },
-  {
-    "tip": "probando",
-    "explanation": "x",
-    "category": "d"
   },
   {
     "tip": "JUGA MAS",
@@ -42,5 +27,15 @@
     "tip": "NO USEN AUTOPILOT",
     "explanation": "REPITO, NO USEN AUTO PILOT\n\nOMIX: el tapeo tiene que ir sincronizado con tu cursor",
     "category": "tapping"
+  },
+  {
+    "tip": "-  - tension + velocidad",
+    "explanation": "evitar tensionar las manos para mayor veloccidad",
+    "category": "streams"
+  },
+  {
+    "tip": "Siempre senti las teclas",
+    "explanation": "Evitar levantar los dedos de las teclas hace que puedas pulsarlas antes, ayudando a la velocidad y el control.",
+    "category": "streams, tapping"
   }
 ]

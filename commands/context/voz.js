@@ -15,7 +15,7 @@ export default {
 
 		// Crear canal de voz temporal
 		const channel = await guild.channels.create({
-			name: `🔊 ${member.user.nickname} & ${targetUser.nickname}`,
+			name: `🔊 ${member.user.username}`,
 			type: 2, // Tipo de canal de voz
 			parent: member.voice.channel.parent, // Mantener en la misma categoría
 			permissionOverwrites: [

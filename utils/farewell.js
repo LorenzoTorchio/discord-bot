@@ -1,11 +1,11 @@
 import fs from "fs";
-import getOsuUsername from "../../utils/getOsuUsername.js";
+import getOsuUsername from "./getOsuUsername.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const userDataPath = path.join(__dirname, "../../data/users.json");
+const userDataPath = path.join(__dirname, "../data/users.json");
 
 export async function farewell(member, client) {
 	const channel = client.channels.cache.get("1353889767892189234");

@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import getOsuToken from "../../utils/getOsuToken.js";
+import getOsuToken from "./getOsuToken.js";
 dotenv.config();
 
 const OSU_API_URL = "https://osu.ppy.sh/api/v2";
@@ -41,15 +41,17 @@ async function searchBeatmapByName(title, token) {
 	}
 }
 
-async function checkOsuPresence(client) {
+async function checkOsuPresence(client, users) {
 	const guild = client.guilds.cache.get(process.env.GUILD_ID);
 	if (!guild) return;
 
 	guild.members.cache.forEach(async (member) => {
-		if (!member.voice.channel) return; // Skip if not in voice
+		if (!member.voice.channel) return;
 
 		const osuActivity = member.presence?.activities?.find((act) => act.name === "osu!(lazer)");
-		const isPlaying = osuActivity?.state?.toLowerCase().includes("clicking circles");
+
+		const isPlaying = osuActivity?.state?.toLowerCase() === "clicking circles" || osuActivity?.state?.toLowerCase() === "clicking circles with others";
+
 
 		// If user stops playing, undeafen immediately
 		if (!osuActivity && activeOsuPlayers.has(member.id)) {

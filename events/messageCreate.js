@@ -1,4 +1,4 @@
-import displayBeatmapEmbed from "./functions/displayBeatmapEmbed.js"
+import displayBeatmapEmbed from "../utils/displayBeatmapEmbed.js"
 
 export default {
 	name: "messageCreate",

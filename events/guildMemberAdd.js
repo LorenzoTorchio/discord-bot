@@ -1,10 +1,9 @@
-
-import { greet } from "./functions/greet.js";
+import { greet } from "../utils/greet.js";
+import { Events } from "discord.js";
 
 export default {
-	name: "guildMemberAdd",
+	name: Events.GuildMemberAdd,
 	async execute(client, member) {
-		greet(member, client);
+		greet(member, client); // Call the greeting function
 	}
 };
-

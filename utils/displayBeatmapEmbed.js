@@ -1,6 +1,6 @@
 import axios from "axios";
 import { EmbedBuilder } from "discord.js";
-import getOsuToken from "../../utils/getOsuToken.js";
+import getOsuToken from "./getOsuToken.js";
 
 const OSU_API_URL = "https://osu.ppy.sh/api/v2";
 

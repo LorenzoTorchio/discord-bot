@@ -1,9 +1,53 @@
 # Road Map
-calcular play
-medallas
-recursos https://ajuelosemmanuel.github.io/osuCheatSheet/#/?id=general, https://inex.osekai.net/medals/Tribulation
+- Modo DND
+- Corregir enoserdecer por tiempo de map
+- Calcular play
+- Agregar Medallas
+- Contextual Guardar Consejo
+- Avisar streaming 
+- Diccionario Latinoamericano
+- Competencia (Duelo, Torneo, Equipos, BR)
+- Estadisticas (basadas en top 100, segun mapas especificos, Victorias) 
+- Calcular peso de pp en top 
+- Prueba (Envia el link de la playlist para medirse la habiliad acorde mapas predeterminados)
+- Buscar (buscar mapa segun categoria para crear room tematico)
+    - año (07 >)
+    - artista (destacados)
+    - genero
+    - mappers
+    - mod: HD, EZ, DT, HR. 
+    - habilidad
+    - bpm
+    - farm
+    - medallas
+- recordatorios mitad de semana, dia anterior, cuatro horas, una hora.
+- segun la mayoria de roles por participante.
+### duelo (contextual)
+- con o sin handicap
+- bo#
+- habilidad / aleatorio
+- queue duelo
+### duelo entre equipos (automatico)
+- rojo azul (balanceado) 
+- equipos multiples 
+- clan 
+### Torneo (automatico)
+- obtiene participantes
+- genera brackets
 
-atajos
+## Otras modalidades
+freestyle battleroyale (comando)
+slots (se rollea mods)
+Osu artistico (cursor dance match)
+
+# Desarrollando 
+### Calendario
+corregir por huso horario
+rendimiento mensual
+
+---
+# Info
+- Atajos
 
     Alt + Up/Down Arrow : Adjust volume
     Ctrl + Alt + Shift + S : Reload skin
@@ -156,55 +200,4 @@ Everything Else
 
 
 
-Diccionario
-autodeaf
-detectar streaming:
-duelo
-torneo
-vs equipos
-br
-### Prueba (Envia el link de la playlist para medirse la habiliad acorde mapas predeterminados)
 
-### Estadisticas
-basadas en top 100 
-habilidad por overall skill
-victorias
-
-### Buscar (buscar mapa segun categoria para crear room tematico)
-- año (07 >)
-- artista (destacados)
-- genero
-- mappers
-- mod: HD, EZ, DT, HR. 
-- habilidad
-- bpm
-- farm
-- medallas
-
-## Competencias
-- recordatorios mitad de semana, dia anterior, cuatro horas, una hora.
-- segun la mayoria de roles por participante.
-### duelo (contextual)
-- con o sin handicap
-- bo#
-- habilidad / aleatorio
-
-queue duelo
-### duelo entre equipos (automatico)
-- rojo azul (balanceado) 
-- equipos multiples 
-- clan 
-### Torneo (automatico)
-- obtiene participantes
-- genera brackets
-### freestyle battleroyale (comando)
-### slots (se rollea mods)
-### osu artistico (cursor dance match)
-
-# Desarrollando 
-### Calendario
-corregir por huso horario
-rendimiento mensual
-
-### Reciente 
-Implementar calcular pp segun jugada
