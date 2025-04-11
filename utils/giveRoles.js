@@ -37,9 +37,6 @@ async function giveRoles(guild, discordId, osuId) {
 		const favoriteMode = Object.keys(osuUser.statistics_rulesets || {}).reduce((a, b) =>
 			osuUser.statistics_rulesets[a].play_count > osuUser.statistics_rulesets[b].play_count ? a : b, "osu");
 
-		// Asignar rol basado en rango
-		await updateRanks(guild, discordId, globalRank);
-
 		// Asignar rol basado en equipo
 		if (osuUser.team) {
 			console.log(`📌 ${member.user.tag} pertenece al equipo: ${osuUser.team}`);

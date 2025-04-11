@@ -1,15 +1,19 @@
-# Testeando
-- Calendario
 
-# Desarrollando 
+# Desarrollando
+
+## Testeando
+
+## Corregir
+- solo usar calendario, cuaderno en comandos (y resolver con flags el resto) 
+- mejorar reciente
 - Modificar consejos, hacerlo cuaderno/biblio, combinar recetas, seccion diccionario, recursos (añadir contextual), categoria, seccion. 
 
 # Road Map
 ## Funcionalidades generales
 - Funcionalidad de enviar mensaje
 - Calcular play
-- Buscar (buscar mapa segun categoria para crear room tematico)
-    - año (07 >)
+- Buscar (buscar mapa segun categoria para crear room tematico) 
+- año (07 >)
     - artista (destacados)
     - genero
     - mappers
@@ -20,7 +24,9 @@
     - medallas
 - Competencia (Duelo, Torneo, Equipos, BR) ( segun la mayoria de roles por participante ).
 - Estadisticas (basadas en top 100, segun mapas especificos, Victorias, rendimiento mensual) 
+- recomendar (a lo tillerino)
 - Prueba (Envia el link de la playlist para medirse la habiliad acorde mapas predeterminados)
+
 ## Funcionalidades especificas
 ### duelo (contextual)
 - con o sin handicap
@@ -47,6 +53,12 @@ Osu artistico (cursor dance match)
 - grabar letra en ytm
 - juntarlos y subirlo a una playlsit en yt privada
 - hacer watchtogether en escenario
+
+## Minecraft
+- lista cuanto usuarios hay jugando (buscar alguna api) en caso de 0
+- agregar usuarios de aternos para que puedan prender el servidor, y listar usuarios con permisos para iniciar el servidor
+
+## Cinema
 
 ---
 # Info / Recursos

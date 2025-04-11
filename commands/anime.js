@@ -33,23 +33,23 @@ export default {
 				animeData = fileContent ? JSON.parse(fileContent) : {};
 			} catch (error) {
 				console.error('Error al leer anime.json:', error);
-				return interaction.reply('Hubo un problema al leer los datos. Contacta con el administrador.');
+				return interaction.reply({ content: 'Hubo un problema al leer los datos. Contacta con el administrador.', flags: 64 });
 			}
 		}
 
 		if (!animeData[user1.id]) {
-			return interaction.reply(`${user1.nickname || user1.user.username} no tiene un usuario de AniList vinculado.`);
+			return interaction.reply({ content: `${user1.nickname || user1.user.username} no tiene un usuario de AniList vinculado.`, flags: 64 });
 		}
 
 		const userName1 = animeData[user1.id];
 		const animeList1 = await fetchAnimeList(userName1, "Watching");
 
 		if (!user2) {
-			return interaction.reply(`**${user1.nickname || user1.user.username} está viendo:**\n${animeList1 ? animeList1.join('\n') : 'No está viendo ningún anime.'}`);
+			return interaction.reply({ content: `**${user1.nickname || user1.user.username} está viendo:**\n${animeList1 ? animeList1.join('\n') : 'No está viendo ningún anime.'}`, flags: 64 });
 		}
 
 		if (!animeData[user2.id]) {
-			return interaction.reply(`${user2.nickname || user2.user.username} no tiene un usuario de AniList vinculado.`);
+			return interaction.reply({ content: `${user2.nickname || user2.user.username} no tiene un usuario de AniList vinculado.`, flags: 64 });
 		}
 
 		const userName2 = animeData[user2.id];
@@ -58,19 +58,18 @@ export default {
 		const commonAnimes = animeList1 && animeList2 ? animeList1.filter(anime => animeList2.includes(anime)) : [];
 
 		if (commonAnimes.length > 0) {
-			return interaction.reply(`**${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} están viendo en común:**\n${commonAnimes.join('\n')}`);
+			return interaction.reply({ content: `**${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} están viendo en común:**\n${commonAnimes.join('\n')}`, flags: 64 });
 		}
 
-		// Si no hay anime en común en Watching, buscar en Planning
 		const planningList1 = await fetchAnimeList(userName1, "Planning");
 		const planningList2 = await fetchAnimeList(userName2, "Planning");
 		const commonPlanning = planningList1 && planningList2 ? planningList1.filter(anime => planningList2.includes(anime)) : [];
 
 		if (commonPlanning.length > 0) {
-			return interaction.reply(`${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo", pero sí en "Planeado":\n${commonPlanning.join('\n')}`);
+			return interaction.reply({ content: `${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo", pero sí en "Planeado":\n${commonPlanning.join('\n')}`, flags: 64 });
 		}
 
-		return interaction.reply(`${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo" ni en "Planeado".`);
+		return interaction.reply({ content: `${user1.nickname || user1.user.username} y ${user2.nickname || user2.user.username} no tienen animes en común en "Viendo" ni en "Planeado".`, flags: 64 });
 	}
 };
 

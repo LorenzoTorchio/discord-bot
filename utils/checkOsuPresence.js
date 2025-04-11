@@ -1,38 +1,51 @@
-import fs from "fs";
-import path from "path";
+import { promises as fs } from 'fs';
+import path from 'path';
+import getDndUsers from './getDndUsers.js';
+import linkUser from './linkUser.js';
 import { fileURLToPath } from "url";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DND_FILE = path.join(__dirname, "../data/dnd.json");
-
+const userDataPath = path.join(__dirname, "../data/users.json");
+import updateRank from './updateRank.js'
 const activeOsuPlayers = new Map();
-
-function getDndUsers() {
-	if (!fs.existsSync(DND_FILE)) return new Set();
-	try {
-		const data = fs.readFileSync(DND_FILE, "utf8").trim();
-		if (!data) return new Set();
-		const parsed = JSON.parse(data);
-		return new Set(Array.isArray(parsed) ? parsed : []);
-	} catch (error) {
-		console.error("❌ Error reading dnd.json:", error);
-		return new Set();
-	}
-}
 
 async function checkOsuPresence(client) {
 	const guild = client.guilds.cache.get(process.env.GUILD_ID);
 	if (!guild) return;
 
-	const dndUsers = getDndUsers();
-
 	guild.members.cache.forEach(async (member) => {
-		if (!member.voice.channel || !dndUsers.has(member.id)) return;
-
 		const osuActivity = member.presence?.activities?.find((act) => act.name === "osu!(lazer)");
-		const isPlaying = osuActivity?.state?.toLowerCase().includes("clicking circles");
 
+		if (!osuActivity) return
+		//link User
+		const discordId = member.user.id;
+		console.log(discordId, "en osu")
+		try {
+			const data = await fs.readFile(userDataPath, "utf8");
+			const userData = JSON.parse(data);
+			if (!userData[discordId]) {
+				console.log(`🔗 enlazando ${member.user.username}.`);
+				await linkUser(osuActivity, member);
+			}
+		} catch (error) {
+			console.error("❌ Error reading user data:", error);
+		}
+
+		//updateRank
+		const isPlaying = osuActivity?.state?.toLowerCase().includes("clicking circles");
+		if (!isPlaying) return
+		const largeText = osuActivity.assets.largeText;
+		const match = largeText.match(/^(.+?) \(rank #([\d,.]+)\)$/);
+		console.log(match)
+		if (match) {
+			const rank = match[2].replace(".", "");
+			console.log(discordId, "jugando, actualizando rango")
+			updateRank(discordId, rank);
+		}
+
+		//deaf dnd
+		const dndUsers = getDndUsers();
+		if (!member.voice.channel || !dndUsers.has(member.id)) return;
 		if (!isPlaying && activeOsuPlayers.has(member.id)) {
 			await undeafenUser(member, "Dejó de jugar osu!");
 			return;

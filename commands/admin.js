@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from "discord.js";
 import assignRoles from "../utils/assignRoles.js";
-
+import deleteMessages from "../utils/deleteMessages.js"
+import updateRanks from "../utils/updateRanks.js";
+import updatePlaycounts from "../utils/updatePlaycounts.js"
 export default {
 	data: new SlashCommandBuilder()
 		.setName("admin")
@@ -27,6 +29,11 @@ export default {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 
+		const requiredRoleId = "1140048264666824745";
+
+		if (!interaction.member.roles.cache.has(requiredRoleId)) {
+			return interaction.editReply("❌ No tienes permiso para usar este comando.");
+		}
 		const action = interaction.options.getString("action");
 		const cantidad = interaction.options.getInteger("cantidad") || 100;
 
