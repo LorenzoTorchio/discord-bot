@@ -1,58 +1,37 @@
 ## Investigar
 - Performance Breakdown
-
-## Calidad de codigo
-- reconocer patrones para mejor modularizacion
+- Como se agrega handicap? (Mods, Skills) 
 
 ## Corregir
-- Modificar consejos, hacerlo cuaderno, (combinar recetas, seccion diccionario, recursos) (añadir contextual), (añadir categoria y seccion). 
-- solo usar calendario, cuaderno en comandos (y resolver con flags el resto) 
+- usar calendario y cuaderno en canal de equipo 
 - actualizar playcount cuando persona deja de jugar
+- Agregegar map añadir modal de habilidad
 
 ## Pendientes 
-- Funcionalidad de enviar mensaje
-- Calcular play
+- Comando competencia requiere que haya # apropiado de maps por participante
+- Comando Pool recorre los mpas de habilidad y permite agregar a una pool segun nombre de torneo
+- Segun la modalidad de competencia se evalua de maneras distintas
+- Entrenar :skill: obtiene un map de beatmap.js filtrando por habilidad
 - Estadisticas (basadas en top 100, segun mapas especificos, Victorias, rendimiento mensual) 
 - recomendar (a lo tillerino) (por *, tiempo, bpm, stat, pp, farm, mod, mode, año, genero, 
-
-### duelo (contextual)
-- Como se agrega handicap? (Mods, Skills) 
-- Como se elige los maps? habilidad / aleatorio
-- Queue duelo (todos los dias a las 10 hora)
-- Bo3
-
-### duelo entre equipos (automatico)
-- rojo azul (balanceado) 
-- equipos multiples 
+- bo3 por habilidad
+- Duelo abierto
+- vs (balanceado segun pp, empezar por mayor jugadores con pp) 
 - clan 
+- participantes segun... evento, voice, sala
+- algoritmo para generar brackets
+- mapa diario leaderboard
 
-### Torneo (automatico)
-- obtiene participantes
-- genera brackets
-
-### modalidades
+### modalidades para competencias
 freestyle battleroyale (comando)
 slots (se rollea mods)
 Osu artistico (cursor dance match)
 
-# Otras Actividades
-
 ## Karaoke
-- seleccionar canciones cada uno
-- bajar mp3
-- sacarle voz
-- grabar letra en ytm
-- juntarlos y subirlo a una playlsit en yt privada
-- hacer watchtogether en escenario
-
-## Minecraft
-- lista cuanto usuarios hay jugando (buscar alguna api) en caso de 0
-- agregar usuarios de aternos para que puedan prender el servidor, y listar usuarios con permisos para iniciar el servidor
 
 ## Cinema
 
-## Musica
-- Usar bot para musica
+## MC
 
 ---
 # Info / Recursos
@@ -189,6 +168,22 @@ Guias y tutoriales para mejorar
 
 
 
+Statistics for All Mods
 
+Overall  *
+Score: 
+Combo: 
+Accuracy: 
+PP: 
 
+Aim *
 
+Tapping *
+
+Low AR *
+
+High BPM *
+
+Technical *
+
+Precision *

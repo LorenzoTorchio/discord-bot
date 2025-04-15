@@ -36,9 +36,9 @@ export default {
 	data: buildCuadernoCommand(),
 
 	async execute(interaction) {
-		const subcommand = interaction.options.getSubcommand();
+		const tipo = interaction.options.getString("tipo");
 
-		if (subcommand === "escribir") {
+		if (tipo === "escribir") {
 			const modal = new ModalBuilder()
 				.setCustomId("submit_page")
 				.setTitle("Nueva Entrada en el Cuaderno");
@@ -75,7 +75,7 @@ export default {
 			);
 
 			await interaction.showModal(modal);
-		} else if (subcommand === "leer") {
+		} else if (tipo === "leer") {
 			const categoryFilter = interaction.options.getString("categoria");
 			const subcategoryFilter = interaction.options.getString("subcategoria");
 

@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const warnsFilePath = path.join(__dirname, '../../data/warns.json');
 const COOLDOWN_TIME = 90 * 60 * 1000; // 90 minutos
-const WARN_CHANNEL_ID = '1356645246825398463'; // Reemplaza con tu canal de avisos
+const WARN_CHANNEL_ID = '1349075959562899506'; // Reemplaza con tu canal de avisos
 
 const reglas = {
 	1: "**1. No comportarse de manera tóxica**\n- Se prohíbe el acoso, insultos y provocaciones.\n- Respeta las opiniones de los demás.\n- No se permiten comentarios discriminatorios.\n- Mantén un ambiente amigable.",

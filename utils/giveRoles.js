@@ -5,7 +5,6 @@ import playmodeRoles from "../config/playmodeRoles.js";
 import playstyleRoles from "../config/playstyleRoles.js";
 import getOsuToken from "../utils/getOsuToken.js";
 import addTeam from "../utils/addTeam.js";
-import updateRanks from "../utils/updateRanks.js";
 
 dotenv.config();
 
@@ -31,12 +30,11 @@ async function giveRoles(guild, discordId, osuId) {
 
 		console.log(`✅ Retrieved osu! data for ${osuUser.username} (${osuId})`);
 
-		const globalRank = osuUser.statistics?.global_rank ?? 9999999;
 		const countryCode = osuUser.country?.code;
 		const playstyle = osuUser.playstyle || [];
 		const favoriteMode = Object.keys(osuUser.statistics_rulesets || {}).reduce((a, b) =>
 			osuUser.statistics_rulesets[a].play_count > osuUser.statistics_rulesets[b].play_count ? a : b, "osu");
-
+		console.log(osuUser, osuUser.statistics_rulesets, favoriteMode)
 		// Asignar rol basado en equipo
 		if (osuUser.team) {
 			console.log(`📌 ${member.user.tag} pertenece al equipo: ${osuUser.team}`);

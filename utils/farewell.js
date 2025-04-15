@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const userDataPath = path.join(__dirname, "../data/users.json");
 
 export async function farewell(member, client) {
-	const channel = client.channels.cache.get("1353889767892189234");
+	const channel = client.channels.cache.get("1353889728755273758");
 	if (!channel) {
 		console.error("No se encontró el canal de despedida.");
 		return;

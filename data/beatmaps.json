@@ -1,9 +1,34 @@
-{
-    "habilidad": [
-        "https://osu.ppy.sh/beatmapsets/2323493"
-    ],
-    "torneo": [
-        "https://osu.ppy.sh/beatmapsets/1606970",
-        "https://osu.ppy.sh/beatmapsets/654452"
-    ]
-}
+[
+    {
+        "id": 4779510,
+        "title": "Not My problem",
+        "difficulty": "Normal",
+        "stars": "2.22",
+        "bpm": 120,
+        "creator": "Rayden_Viz",
+        "maxCombo": 33,
+        "status": "graveyard",
+        "favouriteCount": 23,
+        "rankedDate": "31/12/1969",
+        "hardestBeatmap": "Normal (2.22⭐)",
+        "stats": "AR: 9 | CS: 4 | Drain: 5 | Acc: 5",
+        "thumbnail": "https://assets.ppy.sh/beatmaps/2247857/covers/list.jpg",
+        "url": "https://osu.ppy.sh/beatmapsets/2247857"
+    },
+    {
+        "id": 2004799,
+        "title": "Overkill",
+        "difficulty": "Eternal Death",
+        "stars": "6.69",
+        "bpm": 174,
+        "creator": "Sotarks",
+        "maxCombo": 2009,
+        "status": "ranked",
+        "favouriteCount": 1861,
+        "rankedDate": "29/4/2019",
+        "hardestBeatmap": "Eternal Death (6.69⭐)",
+        "stats": "AR: 9.6 | CS: 3.8 | Drain: 5 | Acc: 9.2",
+        "thumbnail": "https://assets.ppy.sh/beatmaps/957594/covers/list.jpg",
+        "url": "https://osu.ppy.sh/beatmapsets/957594"
+    }
+]
