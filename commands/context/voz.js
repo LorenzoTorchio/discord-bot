@@ -2,7 +2,7 @@ import { ContextMenuCommandBuilder, ApplicationCommandType } from 'discord.js';
 
 export default {
 	data: new ContextMenuCommandBuilder()
-		.setName('Hablar en Privado')
+		.setName('Crear Canal de Voz')
 		.setType(ApplicationCommandType.User),
 
 	async execute(interaction) {
@@ -20,8 +20,8 @@ export default {
 			parent: member.voice.channel.parent, // Mantener en la misma categoría
 			permissionOverwrites: [
 				{ id: guild.id, deny: ['ViewChannel'] }, // Ocultar para todos
-				{ id: member.user.id, allow: ['ManageChannels', 'MoveMembers', 'ViewChannel', 'Connect'] },
-				{ id: targetUser.id, allow: ['ViewChannel', 'Connect'] }
+				{ id: member.user.id, allow: ['ViewChannel', 'Connect', 'Speak', 'Stream', 'MuteMembers', 'DeafenMembers', 'MoveMembers', 'ManageChannels', 'ManageRoles'] },
+				{ id: targetUser.id, allow: ['ViewChannel', 'Connect', 'Speak', 'Stream', 'MuteMembers', 'DeafenMembers', 'MoveMembers', 'ManageChannels', 'ManageRoles'] }
 			]
 		});
 

@@ -1,42 +1,31 @@
+## Investigar
+- Performance Breakdown
 
-# Desarrollando
-
-## Testeando
+## Calidad de codigo
+- reconocer patrones para mejor modularizacion
 
 ## Corregir
+- Modificar consejos, hacerlo cuaderno, (combinar recetas, seccion diccionario, recursos) (añadir contextual), (añadir categoria y seccion). 
 - solo usar calendario, cuaderno en comandos (y resolver con flags el resto) 
-- mejorar reciente
-- Modificar consejos, hacerlo cuaderno/biblio, combinar recetas, seccion diccionario, recursos (añadir contextual), categoria, seccion. 
+- actualizar playcount cuando persona deja de jugar
 
-# Road Map
-## Funcionalidades generales
+## Pendientes 
 - Funcionalidad de enviar mensaje
 - Calcular play
-- Buscar (buscar mapa segun categoria para crear room tematico) 
-- año (07 >)
-    - artista (destacados)
-    - genero
-    - mappers
-    - mod: HD, EZ, DT, HR. 
-    - habilidad
-    - bpm
-    - farm
-    - medallas
-- Competencia (Duelo, Torneo, Equipos, BR) ( segun la mayoria de roles por participante ).
 - Estadisticas (basadas en top 100, segun mapas especificos, Victorias, rendimiento mensual) 
-- recomendar (a lo tillerino)
-- Prueba (Envia el link de la playlist para medirse la habiliad acorde mapas predeterminados)
+- recomendar (a lo tillerino) (por *, tiempo, bpm, stat, pp, farm, mod, mode, año, genero, 
 
-## Funcionalidades especificas
 ### duelo (contextual)
-- con o sin handicap
-- bo#
-- habilidad / aleatorio
-- queue duelo
+- Como se agrega handicap? (Mods, Skills) 
+- Como se elige los maps? habilidad / aleatorio
+- Queue duelo (todos los dias a las 10 hora)
+- Bo3
+
 ### duelo entre equipos (automatico)
 - rojo azul (balanceado) 
 - equipos multiples 
 - clan 
+
 ### Torneo (automatico)
 - obtiene participantes
 - genera brackets
@@ -45,6 +34,8 @@
 freestyle battleroyale (comando)
 slots (se rollea mods)
 Osu artistico (cursor dance match)
+
+# Otras Actividades
 
 ## Karaoke
 - seleccionar canciones cada uno
@@ -59,6 +50,9 @@ Osu artistico (cursor dance match)
 - agregar usuarios de aternos para que puedan prender el servidor, y listar usuarios con permisos para iniciar el servidor
 
 ## Cinema
+
+## Musica
+- Usar bot para musica
 
 ---
 # Info / Recursos

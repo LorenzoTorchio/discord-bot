@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from "url";
-
+import getOsuToken from "../utils/getOsuToken.js"
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,22 +12,7 @@ const __dirname = path.dirname(__filename);
 const userDataPath = path.join(__dirname, "../data/users.json");
 
 const OSU_API_URL = 'https://osu.ppy.sh/api/v2';
-const { OSU_CLIENT_ID, OSU_CLIENT_SECRET } = process.env;
 
-async function getToken() {
-	try {
-		const { data } = await axios.post('https://osu.ppy.sh/oauth/token', {
-			client_id: OSU_CLIENT_ID,
-			client_secret: OSU_CLIENT_SECRET,
-			grant_type: 'client_credentials',
-			scope: 'public'
-		});
-		return data.access_token;
-	} catch (error) {
-		console.error('Error obteniendo el token de osu!:', error);
-		throw new Error('No se pudo obtener el token de osu!.');
-	}
-}
 
 export default {
 	data: new SlashCommandBuilder()
@@ -47,7 +32,7 @@ export default {
 		}
 
 		try {
-			const token = await getToken();
+			const token = await getOsuToken();
 
 			// Obtener el score más reciente
 			const { data: scores } = await axios.get(`${OSU_API_URL}/users/${osuUserId}/scores/recent`, {
@@ -76,21 +61,26 @@ export default {
 			if (!beatmapset) {
 				return interaction.editReply('No se pudo obtener información del beatmap.');
 			}
-
 			// Embed
 			const embed = new EmbedBuilder()
 				.setTitle(`${beatmapset.title} (${beatmap.version}) - ${beatmapset.creator}`)
 				.setURL(`https://osu.ppy.sh/beatmapsets/${beatmapset.id}`)
 				.setThumbnail(`https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/list.jpg`)
-				.setDescription(`**Duración:** ${Math.floor(beatmap.total_length / 60)}:${beatmap.total_length % 60} | **BPM:** ${beatmap.bpm} | **Mods:** ${mods}`)
+				.setDescription(` ${beatmap.difficulty_rating.toFixed(2)}* **Mods:** ${mods}`)
 				.addFields(
-					{ name: 'Estrellas', value: `${beatmap.difficulty_rating.toFixed(2)}`, inline: true },
-					{ name: 'Combo logrado', value: `${score.max_combo}`, inline: true },
+					{ name: 'Combo', value: `${score.max_combo}/${beatmap.max_combo}`, inline: true },
+					{ name: 'Acc', value: `${(score.accuracy * 100).toFixed(2)}%`, inline: true },
+					{ name: 'Rank', value: score.rank, inline: true },
+					{ name: 'pp', value: `${score.pp === null ? 0 : pp}`, inline: true },
+					{ name: 'Miss', value: `${score.statistics.count_miss}x`, inline: true },
+					{ name: 'Duraciòn:', value: `${Math.floor(beatmap.total_length / 60)}:${beatmap.total_length % 60}`, inline: true },
+					{ name: 'BPM:', value: `${beatmap.bpm}`, inline: true },
+
 					{ name: 'Estado', value: `${beatmap.status}`, inline: true },
 					{ name: 'Likes', value: `${beatmapset.favourite_count}`, inline: true },
-					{ name: 'Fecha de aprobación', value: `${new Date(beatmapset.ranked_date).toLocaleDateString()}`, inline: true }
+					{ name: 'Fecha de aprobación', value: `${beatmapset.ranked_date === null ? "-" : new Date(beatmapset.ranked_date).toLocaleDateString()}`, inline: true }
 				)
-				.setFooter({ text: `Jugado el ${new Date(score.created_at).toLocaleString()}` });
+				.setFooter({ text: `Jugado el ${new Date(score.created_at).toLocaleString()} #Intentos ${beatmap.current_user_playcount} ` });
 
 			interaction.editReply({ embeds: [embed] });
 		} catch (error) {

@@ -1,8 +1,13 @@
 import { SlashCommandBuilder } from "discord.js";
 import assignRoles from "../utils/assignRoles.js";
-import deleteMessages from "../utils/deleteMessages.js"
+import deleteMessages from "../utils/deleteMessages.js";
 import updateRanks from "../utils/updateRanks.js";
-import updatePlaycounts from "../utils/updatePlaycounts.js"
+import updatePlaycounts from "../utils/updatePlaycounts.js";
+
+const allowedUsers = [
+	"1257414054201524224", // Lorenzo
+];
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName("admin")
@@ -29,11 +34,10 @@ export default {
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 
-		const requiredRoleId = "1140048264666824745";
-
-		if (!interaction.member.roles.cache.has(requiredRoleId)) {
+		if (!allowedUsers.includes(interaction.user.id)) {
 			return interaction.editReply("❌ No tienes permiso para usar este comando.");
 		}
+
 		const action = interaction.options.getString("action");
 		const cantidad = interaction.options.getInteger("cantidad") || 100;
 
@@ -49,7 +53,7 @@ export default {
 				break;
 			case "assignRoles":
 				await assignRoles(interaction.guild);
-				break
+				break;
 			default:
 				interaction.editReply("❌ Comando no válido.");
 		}

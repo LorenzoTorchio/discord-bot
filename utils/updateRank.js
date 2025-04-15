@@ -11,21 +11,14 @@ const getRankRole = (globalRank) => {
 		.map(Number)
 		.sort((a, b) => a - b);
 
-	let selectedThreshold = thresholds[0];
-
-	for (const threshold of thresholds) {
-		if (globalRank >= threshold) {
-			selectedThreshold = threshold;
-		} else {
-			break;
-		}
-	}
+	const selectedThreshold = thresholds.reduce((prev, curr) =>
+		globalRank >= curr ? curr : prev
+		, thresholds[0]);
 
 	return rankRoles[selectedThreshold] || rankRoles.default;
 };
 
 async function updateRank(id, rank) {
-	console.log("verificando rango de", id)
 	try {
 		const guild = await client.guilds.fetch(GUILD_ID);
 		const member = await guild.members.fetch(id);
@@ -33,25 +26,21 @@ async function updateRank(id, rank) {
 		const assignedRoleId = getRankRole(rank);
 		const currentRoles = new Set(member.roles.cache.keys());
 
-		if (currentRoles.has(assignedRoleId)) {
-			console.log(`ℹ ${member.user.tag} ya tiene el rol correcto.`);
-			return;
-		}
+		if (currentRoles.has(assignedRoleId)) return;
 
 		const rolesToRemove = new Set(
 			Object.values(rankRoles).filter((roleId) => currentRoles.has(roleId))
 		);
 
-		if (rolesToRemove.size > 0) {
-			console.log(
-				`🔄 Eliminando roles antiguos de ${member.user.tag}: ${[...rolesToRemove].join(", ")}`
-			);
-			await member.roles.remove([...rolesToRemove]);
-		}
+		if (rolesToRemove.size > 0) await member.roles.remove([...rolesToRemove]);
 
-		console.log(`👀 Asignando rol ${assignedRoleId} a ${member.user.tag} (Rank: ${rank})`);
 		await member.roles.add(assignedRoleId);
-		console.log(`✅ Rol asignado correctamente a ${member.user.tag}`);
+		const channel = guild.channels.cache.get("1349075959562899506");
+		if (channel && channel.isTextBased()) {
+			await channel.send(
+				`🎉 <@${id}> ahora tiene <@&${assignedRoleId}> de rango!`
+			);
+		}
 	} catch (error) {
 		console.error(`❌ Error al actualizar el rango del usuario ${id}:`, error);
 	}
