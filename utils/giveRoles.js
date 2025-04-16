@@ -8,12 +8,12 @@ import addTeam from "../utils/addTeam.js";
 
 dotenv.config();
 
-async function giveRoles(guild, discordId, osuId) {
+async function giveRoles(guild, discordId, osuId, mode) {
 	try {
 		console.log(`🎯 Fetching osu! data for ${discordId} (osu! ID: ${osuId})...`);
 
 		const token = await getOsuToken();
-		const response = await axios.get(`https://osu.ppy.sh/api/v2/users/${osuId}/osu`, {
+		const response = await axios.get(`https://osu.ppy.sh/api/v2/users/${osuId}/${mode}`, {
 			headers: { Authorization: `Bearer ${token}` }
 		});
 		const osuUser = response.data;
@@ -32,9 +32,7 @@ async function giveRoles(guild, discordId, osuId) {
 
 		const countryCode = osuUser.country?.code;
 		const playstyle = osuUser.playstyle || [];
-		const favoriteMode = Object.keys(osuUser.statistics_rulesets || {}).reduce((a, b) =>
-			osuUser.statistics_rulesets[a].play_count > osuUser.statistics_rulesets[b].play_count ? a : b, "osu");
-		console.log(osuUser, osuUser.statistics_rulesets, favoriteMode)
+		const favoriteMode = osuUser.playmode || "osu";
 		// Asignar rol basado en equipo
 		if (osuUser.team) {
 			console.log(`📌 ${member.user.tag} pertenece al equipo: ${osuUser.team}`);
@@ -47,6 +45,8 @@ async function giveRoles(guild, discordId, osuId) {
 		if (playmodeRoles[favoriteMode]) {
 			await member.roles.add(playmodeRoles[favoriteMode]);
 			console.log(`🎮 Asignado rol de playmode ${favoriteMode} a ${member.user.tag}`);
+		} else {
+			console.log("el rol debe llamarse", favoriteMode)
 		}
 
 		// Asignar rol basado en ubicación

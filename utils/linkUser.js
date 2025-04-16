@@ -22,7 +22,7 @@ async function saveUserData(userData) {
 	}
 }
 
-async function linkUser(osuActivity, member) {
+async function linkUser(osuActivity, member, mode) {
 	if (!osuActivity?.assets?.largeText) return;
 
 	const largeText = osuActivity.assets.largeText;
@@ -37,13 +37,13 @@ async function linkUser(osuActivity, member) {
 
 	const userData = await loadUserData();
 	if (userData[member.user.id]) return;
-
+	console.log(`${member.user.tag} no se encuentra linkeado`)
 	const token = await getOsuToken();
 	if (!token) return;
 
 	try {
 		const { data: osuUser } = await axios.get(
-			`https://osu.ppy.sh/api/v2/users/${username}/osu`,
+			`https://osu.ppy.sh/api/v2/users/${username}/${mode}`,
 			{
 				headers: { Authorization: `Bearer ${token}` },
 			}
@@ -55,7 +55,7 @@ async function linkUser(osuActivity, member) {
 			console.log(`✅ Linked ${username} (osu! ID: ${osuUser.id}) to ${member.user.tag}`);
 
 			await member.setNickname(osuUser.username);
-			await giveRoles(member.guild, member.user.id, osuUser.id)
+			await giveRoles(member.guild, member.user.id, osuUser.id, mode)
 		}
 	} catch (error) {
 		console.error("❌ Error fetching osu! user data:", error.response?.data || error.message);

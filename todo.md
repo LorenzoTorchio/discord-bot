@@ -1,7 +1,3 @@
-## Investigar
-- Performance Breakdown
-- Como se agrega handicap? (Mods, Skills) 
-
 ## Corregir
 - usar calendario y cuaderno en canal de equipo 
 - actualizar playcount cuando persona deja de jugar
@@ -33,13 +29,6 @@ Osu artistico (cursor dance match)
 
 ## MC
 
----
-# Info / Recursos
----
-
-Salud
-
-    Happystick w/ Dr. Levi Harrison : Advices regarding hand stretching in order to avoid pain/RSI
 
 Informacion
 
